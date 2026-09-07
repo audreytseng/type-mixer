@@ -5,7 +5,7 @@
   const sessionFonts = [];
   let userFonts = readJson(USER_FONTS, []);
   let activeFilter = "all";
-  let selectedColor = "#d9ff73";
+  let selectedColor = "#d7c1c3";
   let highlights = [];
   let detectedPayload = null;
   let toastTimer;
