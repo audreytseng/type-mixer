@@ -75,17 +75,6 @@ window.TYPE_MIXER_FONTS = [
     license: "OFL"
   },
   {
-    id: "caveat",
-    name: "Caveat",
-    category: "display",
-    status: "ready",
-    cssFamily: 'Caveat, cursive',
-    cssUrl: "https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&display=swap",
-    sourceUrl: "https://fonts.google.com/specimen/Caveat",
-    exampleUrl: "https://www.cleonwong.com/",
-    license: "OFL"
-  },
-  {
     id: "reckless-charlota",
     name: "Reckless Charlota",
     category: "serif",
@@ -128,14 +117,5 @@ window.TYPE_MIXER_FONTS = [
     status: "reference",
     cssFamily: 'ui-monospace, "SFMono-Regular", monospace',
     license: "commercial"
-  },
-  {
-    id: "maywriting",
-    name: "mayWriting",
-    category: "display",
-    status: "reference",
-    cssFamily: 'cursive',
-    exampleUrl: "https://www.ryanaque.com/",
-    license: "custom"
   }
 ];

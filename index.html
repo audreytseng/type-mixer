@@ -141,7 +141,7 @@
     <section class="dialog-panel active" data-mode-panel="google">
       <p class="panel-intro">Paste a stylesheet URL from Google Fonts, Bunny Fonts, or Fontsource. The font is saved only in this browser.</p>
       <form id="google-font-form">
-        <label>Font name<input name="name" required placeholder="e.g. Lora"></label>
+        <label>Font name<input name="name" type="text" required placeholder="e.g. Lora"></label>
         <label>Font stylesheet URL<input name="cssUrl" type="url" required placeholder="https://fonts.googleapis.com/css2?family=..."></label>
         <label>Category<select name="category"><option value="serif">Serif</option><option value="sans">Sans serif</option><option value="mono">Monospace</option><option value="display">Display</option></select></label>
         <button class="button" type="submit">Add to my library</button>
@@ -162,7 +162,7 @@
     <section class="dialog-panel" data-mode-panel="local">
       <p class="panel-intro">Try a licensed font without uploading it anywhere. Local files last until this tab closes.</p>
       <form id="local-font-form">
-        <label>Font name<input name="name" required placeholder="My licensed font"></label>
+        <label>Font name<input name="name" type="text" required placeholder="My licensed font"></label>
         <label>Font file<input name="file" type="file" accept=".woff2,.woff,.ttf,.otf" required></label>
         <label>Category<select name="category"><option value="serif">Serif</option><option value="sans">Sans serif</option><option value="mono">Monospace</option><option value="display">Display</option></select></label>
         <button class="button" type="submit">Try for this session</button>

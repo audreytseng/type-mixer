@@ -147,26 +147,32 @@ select:focus, input:focus, textarea:focus { border-color: var(--accent); box-sha
 .how-grid .text-button { margin-top: auto; align-self: start; }
 .page-footer { padding: 28px clamp(24px, 5vw, 80px); display: flex; justify-content: space-between; color: var(--muted); font: 10px/1.4 var(--mono); }
 
-dialog { width: min(620px, calc(100vw - 30px)); max-height: min(760px, calc(100vh - 30px)); border: 1px solid var(--line-strong); border-radius: 14px; padding: 0; color: var(--ink); background: var(--surface-strong); box-shadow: 0 30px 100px rgba(0,0,0,.22); }
+dialog { width: min(720px, calc(100vw - 30px)); max-height: min(800px, calc(100vh - 30px)); border: 1px solid var(--line-strong); border-radius: 14px; padding: 0; color: var(--ink); background: var(--surface-strong); box-shadow: 0 30px 100px rgba(0,0,0,.22); }
 dialog::backdrop { background: rgba(17,18,16,.44); backdrop-filter: blur(5px); }
 dialog[open] { animation: dialog-in .22s cubic-bezier(.2,.8,.2,1); }
 @keyframes dialog-in { from { opacity: 0; transform: translateY(12px) scale(.98); } }
-.dialog-head { padding: 24px 24px 18px; display: flex; align-items: start; justify-content: space-between; }
-.dialog-head h2 { font-size: 34px; }
-.icon-button { width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); font-size: 22px; line-height: 1; }
-.dialog-tabs { display: flex; gap: 7px; padding: 0 24px 18px; border-bottom: 1px solid var(--line); }
-.dialog-panel { display: none; padding: 24px; }
+.dialog-head { padding: 26px 28px 18px; display: flex; align-items: start; justify-content: space-between; }
+.dialog-head h2 { font-size: 38px; }
+.icon-button { width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); font-size: 22px; line-height: 1; }
+.dialog-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; margin: 0 28px 18px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+.dialog-tabs button { border: 0; border-radius: 6px; background: transparent; padding: 9px 12px; }
+.dialog-tabs button.active { background: var(--surface-strong); color: var(--ink); border-color: transparent; box-shadow: 0 1px 5px rgba(30,32,34,.10); }
+.dialog-panel { display: none; padding: 10px 28px 24px; }
 .dialog-panel.active { display: block; animation: panel-in .2s ease; }
 @keyframes panel-in { from { opacity: 0; transform: translateY(5px); } }
-.panel-intro { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+.panel-intro { max-width: 560px; color: var(--muted); font-size: 13px; margin-bottom: 20px; }
 dialog form, .dialog-panel { gap: 15px; }
-dialog form { display: grid; }
+dialog form { display: grid; gap: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+dialog form > label { min-height: 64px; display: grid; grid-template-columns: 150px minmax(0, 1fr); align-items: center; gap: 18px; padding: 10px 12px 10px 16px; border-bottom: 1px solid var(--line); color: var(--ink); }
+dialog form > label input, dialog form > label select { min-height: 42px; border-color: transparent; background: var(--surface-strong); box-shadow: inset 0 0 0 1px var(--line); }
+dialog form > label input:focus, dialog form > label select:focus { border-color: transparent; box-shadow: inset 0 0 0 1px var(--accent), 0 0 0 3px color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+dialog form > .button { min-width: 170px; justify-self: end; margin: 12px; }
 dialog label { display: grid; gap: 7px; }
 .bookmarklet { display: inline-block; text-decoration: none; margin-bottom: 20px; }
 .detected-fonts { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
 .detected-fonts label { display: flex; grid-template-columns: auto 1fr; align-items: center; gap: 7px; border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; color: var(--ink); background: var(--surface); }
 .dialog-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
-.dialog-status { min-height: 20px; margin: 0; padding: 0 24px 22px; color: var(--muted); font-size: 12px; }
+.dialog-status { min-height: 20px; margin: 0; padding: 0 28px 24px; color: var(--muted); font-size: 12px; }
 .toast { position: fixed; right: 24px; bottom: 24px; z-index: 30; background: var(--accent); color: var(--on-accent); padding: 11px 15px; border-radius: 8px; font-size: 12px; opacity: 0; transform: translateY(12px); pointer-events: none; transition: .2s ease; }
 .toast.show { opacity: 1; transform: translateY(0); }
 
@@ -203,6 +209,11 @@ dialog label { display: grid; gap: 7px; }
   .how-grid article { border-right: 0; border-bottom: 1px solid var(--line); }
   .how-grid article:last-child { border-bottom: 0; }
   .page-footer { flex-direction: column; gap: 8px; }
+  .dialog-head { padding-inline: 20px; }
+  .dialog-tabs { margin-inline: 20px; }
+  .dialog-panel { padding-inline: 20px; }
+  dialog form > label { grid-template-columns: 1fr; gap: 7px; align-items: stretch; }
+  dialog form > .button { width: calc(100% - 24px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
