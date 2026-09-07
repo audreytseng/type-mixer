@@ -111,7 +111,7 @@ select:focus, input:focus, textarea:focus { border-color: var(--accent); box-sha
 .preview-copy { margin: auto 0; padding: 68px 0; }
 .preview-copy h2 { max-width: 800px; font-size: clamp(42px, 5.2vw, 76px); line-height: .98; }
 .preview-copy p { max-width: 740px; margin-top: 42px; font-size: clamp(20px, 2vw, 29px); line-height: 1.48; letter-spacing: -.02em; }
-.preview-copy mark { color: #181815; padding: .02em .09em .06em; margin: 0 -.02em; border-radius: .26em .15em .22em .12em; -webkit-box-decoration-break: clone; box-decoration-break: clone; background: linear-gradient(var(--mark), var(--mark)) 0 88% / 100% 72% no-repeat; clip-path: polygon(0 9%, 99% 0, 100% 90%, 1% 100%); animation: marker-in .42s cubic-bezier(.2,.8,.2,1) both; }
+.preview-copy mark { color: #181815; padding: .02em .09em .06em; margin: 0 -.02em; border-radius: .26em .15em .22em .12em; -webkit-box-decoration-break: clone; box-decoration-break: clone; background: linear-gradient(var(--mark), var(--mark)) 0 88% / 100% 72% no-repeat; animation: marker-in .42s cubic-bezier(.2,.8,.2,1) both; }
 @keyframes marker-in { from { background-size: 0 72%; } to { background-size: 100% 72%; } }
 .preview-card.refresh { animation: card-refresh .28s ease; }
 @keyframes card-refresh { 50% { opacity: .62; transform: translateY(3px); filter: blur(2px); } }

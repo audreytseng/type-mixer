@@ -7,6 +7,7 @@
   let activeFilter = "all";
   let selectedColor = "#d7c1c3";
   let highlights = [];
+  let pendingSelection = null;
   let detectedPayload = null;
   let toastTimer;
 
@@ -123,8 +124,8 @@
   }
 
   function addHighlight() {
-    const start = els.bodyInput.selectionStart;
-    const end = els.bodyInput.selectionEnd;
+    const start = pendingSelection?.start ?? els.bodyInput.selectionStart;
+    const end = pendingSelection?.end ?? els.bodyInput.selectionEnd;
     if (end <= start) {
       els.highlightStatus.textContent = "Select a phrase in the body copy first.";
       els.bodyInput.focus();
@@ -132,7 +133,16 @@
     }
     highlights.push({ start, end, color: selectedColor });
     els.highlightStatus.textContent = `Highlighted “${els.bodyInput.value.slice(start, end)}”.`;
+    pendingSelection = null;
     renderPreview();
+  }
+
+  function rememberBodySelection() {
+    const start = els.bodyInput.selectionStart;
+    const end = els.bodyInput.selectionEnd;
+    if (end <= start) return;
+    pendingSelection = { start, end };
+    els.highlightStatus.textContent = `Ready to highlight “${els.bodyInput.value.slice(start, end)}”.`;
   }
 
   function renderLibrary() {
@@ -209,7 +219,8 @@
   els.headingSelect.addEventListener("change", () => renderPreview(true));
   els.bodySelect.addEventListener("change", () => renderPreview(true));
   els.headlineInput.addEventListener("input", () => renderPreview());
-  els.bodyInput.addEventListener("input", () => { highlights = []; els.highlightStatus.textContent = "Text changed—add a new highlight when ready."; renderPreview(); });
+  els.bodyInput.addEventListener("input", () => { highlights = []; pendingSelection = null; els.highlightStatus.textContent = "Text changed—add a new highlight when ready."; renderPreview(); });
+  els.bodyInput.addEventListener("select", rememberBodySelection);
   els.highlightButton.addEventListener("click", addHighlight);
   els.clearHighlights.addEventListener("click", () => { highlights = []; renderPreview(); els.highlightStatus.textContent = "Highlights cleared."; });
   els.swap.addEventListener("click", () => { const old = els.headingSelect.value; els.headingSelect.value = els.bodySelect.value; els.bodySelect.value = old; renderPreview(true); });
