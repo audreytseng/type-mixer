@@ -1,23 +1,50 @@
-# Audrey's Type Mixer
+# Type Mixer
 
-[Open the Type Mixer webpage](./index.html)
+A playful, local-first typography workbench for comparing font pairings, testing highlighted copy, and collecting type inspiration from around the web.
 
-A standalone font-pairing and highlighting playground for comparing serif and sans-serif combinations, writing custom sample text, and experimenting with highlights.
-
-## Source code
-
-- [`index.html`](./index.html) — the complete webpage source: HTML, CSS, and JavaScript in one portable file.
-
-You can copy or send `index.html` to someone else. Fonts loaded from the web require an internet connection; paid or custom fonts remain reference-only unless licensed font files are added.
-
-## Work on it locally
-
-Open `index.html` directly, or run a tiny local server from this folder:
+## Run locally
 
 ```sh
+cd type-mixer
 python3 -m http.server 8000
 ```
 
-Then visit `http://localhost:8000`.
+Open [http://localhost:8000](http://localhost:8000).
 
-When Audrey saves a new font, update `index.html` and the separate personal-website inspiration note. Freely embeddable fonts can be added as working choices; paid or custom fonts should be labeled reference-only.
+## Add a permanent font
+
+The public catalog lives in [`fonts.js`](./fonts.js). Add one object with:
+
+```js
+{
+  id: "font-slug",
+  name: "Font Name",
+  category: "serif", // serif, sans, mono, or display
+  status: "ready", // ready or reference
+  cssFamily: '"Font Name", serif',
+  cssUrl: "https://fonts.googleapis.com/...", // only for embeddable webfonts
+  sourceUrl: "https://official-font-source.example",
+  exampleUrl: "https://site-using-the-font.example",
+  license: "OFL"
+}
+```
+
+Use `status: "reference"` for commercial, custom, or unverified fonts. Do not commit paid font files unless their license explicitly allows redistribution.
+
+## Add a font while browsing
+
+The **Add a font** panel supports:
+
+- Google Fonts, Bunny Fonts, or Fontsource stylesheet URLs saved in the current browser.
+- Local WOFF2, WOFF, TTF, or OTF files loaded for the current tab only.
+- A **Font Finder** bookmarklet that collects rendered family names and the source webpage.
+- A prefilled GitHub issue for permanent font suggestions.
+
+Browser-only additions use local storage. The app has no account, analytics, backend, or font-file uploads.
+
+## Files
+
+- `index.html` — accessible page structure and metadata.
+- `styles.css` — responsive light/dark visual system and animations.
+- `fonts.js` — data-driven public font catalog.
+- `app.js` — pairing, highlighting, library, import, bookmarklet, and persistence behavior.
