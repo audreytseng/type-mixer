@@ -157,15 +157,28 @@
       <form id="google-font-form" novalidate>
         <div class="form-row"><label class="label-input"><input name="name" type="text" placeholder=" " autocomplete="off"><span>Font name</span></label></div>
         <div class="form-row"><label class="label-input"><input name="cssUrl" type="url" placeholder=" " autocomplete="url"><span>Font stylesheet URL</span></label></div>
-        <label class="select-field"><span>Category</span><select name="category"><option value="serif">Serif</option><option value="sans">Sans serif</option><option value="mono">Monospace</option><option value="display">Display</option></select></label>
+        <div class="select-field">
+          <span>Category</span>
+          <div class="choice-picker t-acc" data-choice-picker data-open="false">
+            <button type="button" class="t-acc-head" aria-label="Category: Serif" aria-expanded="false"><span class="choice-picker-value">Serif</span><span class="t-acc-chevron" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6.5L8 10.5L12 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></span></button>
+            <div class="t-acc-panel" aria-hidden="true"><div class="t-acc-panel-inner"><div class="choice-picker-menu" role="listbox" aria-label="Font category"><button type="button" class="choice-picker-option" data-value="serif" aria-selected="true">Serif</button><button type="button" class="choice-picker-option" data-value="sans" aria-selected="false">Sans serif</button><button type="button" class="choice-picker-option" data-value="mono" aria-selected="false">Monospace</button><button type="button" class="choice-picker-option" data-value="display" aria-selected="false">Display</button></div></div></div>
+            <select name="category" class="visually-hidden" tabindex="-1" aria-hidden="true"><option value="serif">Serif</option><option value="sans">Sans serif</option><option value="mono">Monospace</option><option value="display">Display</option></select>
+          </div>
+        </div>
         <button class="button" type="submit">Add to my library</button>
       </form>
     </section>
 
     <section class="dialog-panel" data-mode-panel="webpage">
       <p class="panel-intro">Drag this button to your bookmarks bar. Click it on any webpage, then paste the result below.</p>
-      <a class="bookmarklet button" id="font-finder" href="#">Font finder</a>
-      <label>Paste webpage result<textarea id="webpage-payload" rows="6" placeholder='{"sourceUrl":"https://example.com","fonts":["Example Sans"]}'></textarea></label>
+      <div class="code-block" data-code-block>
+        <div class="code-block-head"><span>font-finder.js</span><button type="button" id="copy-finder-code" aria-label="Copy Font Finder code"><span>Copy</span><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="8" height="8" rx="1.5" stroke="currentColor"/><path d="M3 10.5H2.5A1.5 1.5 0 0 1 1 9V2.5A1.5 1.5 0 0 1 2.5 1H9a1.5 1.5 0 0 1 1.5 1.5V3" stroke="currentColor"/></svg></button></div>
+        <pre><code id="font-finder-code"><span class="code-muted">// run on any webpage</span>
+<span class="code-keyword">const</span> fonts = collectRenderedFonts();
+copy({ sourceUrl: location.href, fonts });</code></pre>
+      </div>
+      <a class="bookmarklet button" id="font-finder" href="#">Drag Font Finder to bookmarks</a>
+      <label class="payload-field"><span>Paste webpage result</span><textarea id="webpage-payload" rows="5" placeholder='{"sourceUrl":"https://example.com","fonts":["Example Sans"]}'></textarea></label>
       <div class="detected-fonts" id="detected-fonts"></div>
       <div class="dialog-actions">
         <button class="button" id="save-detected" type="button">Save selected as references</button>
@@ -177,8 +190,15 @@
       <p class="panel-intro">Try a licensed font without uploading it anywhere. Local files last until this tab closes.</p>
       <form id="local-font-form" novalidate>
         <div class="form-row"><label class="label-input"><input name="name" type="text" placeholder=" " autocomplete="off"><span>Font name</span></label></div>
-        <label>Font file<input name="file" type="file" accept=".woff2,.woff,.ttf,.otf" required></label>
-        <label>Category<select name="category"><option value="serif">Serif</option><option value="sans">Sans serif</option><option value="mono">Monospace</option><option value="display">Display</option></select></label>
+        <label class="file-field"><span>Font file</span><span class="file-control"><input name="file" type="file" accept=".woff2,.woff,.ttf,.otf"><span class="file-button">Choose a font file</span><span class="file-name">No file chosen</span></span></label>
+        <div class="select-field">
+          <span>Category</span>
+          <div class="choice-picker t-acc" data-choice-picker data-open="false">
+            <button type="button" class="t-acc-head" aria-label="Category: Serif" aria-expanded="false"><span class="choice-picker-value">Serif</span><span class="t-acc-chevron" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6.5L8 10.5L12 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></span></button>
+            <div class="t-acc-panel" aria-hidden="true"><div class="t-acc-panel-inner"><div class="choice-picker-menu" role="listbox" aria-label="Font category"><button type="button" class="choice-picker-option" data-value="serif" aria-selected="true">Serif</button><button type="button" class="choice-picker-option" data-value="sans" aria-selected="false">Sans serif</button><button type="button" class="choice-picker-option" data-value="mono" aria-selected="false">Monospace</button><button type="button" class="choice-picker-option" data-value="display" aria-selected="false">Display</button></div></div></div>
+            <select name="category" class="visually-hidden" tabindex="-1" aria-hidden="true"><option value="serif">Serif</option><option value="sans">Sans serif</option><option value="mono">Monospace</option><option value="display">Display</option></select>
+          </div>
+        </div>
         <button class="button" type="submit">Try for this session</button>
       </form>
     </section>

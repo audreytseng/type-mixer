@@ -20,7 +20,8 @@
     colorInput: $("#highlight-color"), highlightStatus: $("#highlight-status"), grid: $("#font-grid"), count: $("#library-count"), search: $("#font-search"),
     dialog: $("#add-dialog"), closeDialog: $("#close-dialog"), dialogStatus: $("#dialog-status"), toast: $("#toast"),
     googleForm: $("#google-font-form"), localForm: $("#local-font-form"), payload: $("#webpage-payload"), detected: $("#detected-fonts"),
-    saveDetected: $("#save-detected"), suggestGithub: $("#suggest-github"), theme: $("#theme-toggle"), themeLabel: $(".theme-label"), finder: $("#font-finder")
+    saveDetected: $("#save-detected"), suggestGithub: $("#suggest-github"), theme: $("#theme-toggle"), themeLabel: $(".theme-label"), finder: $("#font-finder"),
+    copyFinder: $("#copy-finder-code")
   };
 
   function readJson(key, fallback) {
@@ -90,7 +91,7 @@
           option.addEventListener('click', () => {
             select.value = font.id;
             select.dispatchEvent(new Event('change', { bubbles: true }));
-            setFontPickerOpen(picker, false);
+            setAccordionOpen(picker, false);
           });
           menu.append(option);
         });
@@ -111,9 +112,9 @@
     });
   }
 
-  function setFontPickerOpen(picker, open) {
+  function setAccordionOpen(picker, open) {
     if (open) {
-      $$('[data-font-picker]').filter(other => other !== picker).forEach(other => setFontPickerOpen(other, false));
+      $$('[data-font-picker], [data-choice-picker]').filter(other => other !== picker).forEach(other => setAccordionOpen(other, false));
     }
     picker.dataset.open = String(open);
     $('.t-acc-head', picker).setAttribute('aria-expanded', String(open));
@@ -263,6 +264,7 @@
   function clearFormErrors(root) { $$('input[aria-invalid="true"]', root).forEach(clearFieldError); }
 
   function setDialogMode(mode) {
+    $$('[data-choice-picker]', els.dialog).forEach(picker => setAccordionOpen(picker, false));
     $$('[data-mode-tab]').forEach(button => { const active = button.dataset.modeTab === mode; button.classList.toggle("active", active); button.setAttribute("aria-selected", active); });
     $$('[data-mode-panel]').forEach(panel => panel.classList.toggle("active", panel.dataset.modePanel === mode));
   }
@@ -295,7 +297,16 @@
   function setupBookmarklet() {
     const code = `(()=>{const generic=new Set(['serif','sans-serif','monospace','cursive','fantasy','system-ui','ui-serif','ui-sans-serif','ui-monospace']);const clean=s=>s.trim().replace(/^['\"]|['\"]$/g,'');const fonts=[...new Set([...document.querySelectorAll('*')].flatMap(el=>getComputedStyle(el).fontFamily.split(',').map(clean)).filter(f=>f&&!generic.has(f.toLowerCase())))];prompt('Copy this result into Type Mixer:',JSON.stringify({sourceUrl:location.href,title:document.title,fonts},null,2));})()`;
     els.finder.href = `javascript:${code}`;
+    els.finder.dataset.code = `javascript:${code}`;
     els.finder.title = "Drag to your bookmarks bar";
+  }
+
+  function syncChoicePicker(picker) {
+    const select = $('select', picker);
+    const option = select.options[select.selectedIndex];
+    $('.choice-picker-value', picker).textContent = option.textContent;
+    $('.t-acc-head', picker).setAttribute('aria-label', `Category: ${option.textContent}`);
+    $$('.choice-picker-option', picker).forEach(button => button.setAttribute('aria-selected', String(button.dataset.value === select.value)));
   }
 
   function updateThemeLabel() { els.themeLabel.textContent = document.documentElement.dataset.theme === "dark" ? "Light mode" : "Dark mode"; }
@@ -330,14 +341,38 @@
   $$('[data-mode-tab]').forEach(button => button.addEventListener("click", () => setDialogMode(button.dataset.modeTab)));
   els.finder.addEventListener("click", event => { event.preventDefault(); els.dialogStatus.textContent = "Drag Font Finder to your bookmarks bar, then use it on another webpage."; });
   els.theme.addEventListener("click", () => { document.documentElement.dataset.theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark"; updateThemeLabel(); saveState(); });
-  $$('[data-font-picker]').forEach(picker => $('.t-acc-head', picker).addEventListener('click', () => {
-    setFontPickerOpen(picker, picker.dataset.open !== 'true');
+  $$('[data-font-picker], [data-choice-picker]').forEach(picker => $('.t-acc-head', picker).addEventListener('click', () => {
+    setAccordionOpen(picker, picker.dataset.open !== 'true');
   }));
-  document.addEventListener('click', event => {
-    if (!event.target.closest('[data-font-picker]')) $$('[data-font-picker][data-open="true"]').forEach(picker => setFontPickerOpen(picker, false));
+  $$('[data-choice-picker]').forEach(picker => {
+    const select = $('select', picker);
+    $$('.choice-picker-option', picker).forEach(option => option.addEventListener('click', () => {
+      select.value = option.dataset.value;
+      syncChoicePicker(picker);
+      setAccordionOpen(picker, false);
+    }));
+    syncChoicePicker(picker);
   });
-  document.addEventListener('keydown', event => { if (event.key === 'Escape') $$('[data-font-picker][data-open="true"]').forEach(picker => setFontPickerOpen(picker, false)); });
+  document.addEventListener('click', event => {
+    if (!event.target.closest('[data-font-picker], [data-choice-picker]')) $$('[data-open="true"]').forEach(picker => setAccordionOpen(picker, false));
+  });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') $$('[data-open="true"]').forEach(picker => setAccordionOpen(picker, false)); });
   $$('form input').forEach(input => input.addEventListener('input', () => clearFieldError(input)));
+  $$('input[type="file"]').forEach(input => input.addEventListener('change', () => {
+    $('.file-name', input.closest('.file-field')).textContent = input.files[0]?.name || 'No file chosen';
+    clearFieldError(input);
+  }));
+  [els.googleForm, els.localForm].forEach(form => form.addEventListener('reset', () => requestAnimationFrame(() => {
+    $$('[data-choice-picker]', form).forEach(syncChoicePicker);
+    const fileName = $('.file-name', form); if (fileName) fileName.textContent = 'No file chosen';
+  })));
+  els.copyFinder.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(els.finder.dataset.code);
+      $('span', els.copyFinder).textContent = 'Copied'; els.copyFinder.classList.add('copied');
+      setTimeout(() => { $('span', els.copyFinder).textContent = 'Copy'; els.copyFinder.classList.remove('copied'); }, 1800);
+    } catch { showToast('Copy unavailable — drag the button below instead'); }
+  });
 
   els.googleForm.addEventListener("submit", event => {
     event.preventDefault(); const data = new FormData(els.googleForm); const name = String(data.get("name")).trim(); const cssUrl = String(data.get("cssUrl")).trim();
