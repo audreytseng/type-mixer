@@ -63,6 +63,51 @@
     });
     els.headingSelect.value = readyFonts().some(font => font.id === currentHeading) ? currentHeading : readyFonts()[0]?.id;
     els.bodySelect.value = readyFonts().some(font => font.id === currentBody) ? currentBody : readyFonts()[0]?.id;
+    renderFontPickers();
+  }
+
+  function renderFontPickers() {
+    const groups = { serif: "Serif", sans: "Sans serif", mono: "Monospace", display: "Display" };
+    $$('[data-font-picker]').forEach(picker => {
+      const select = document.getElementById(picker.dataset.select);
+      const menu = $('.font-picker-menu', picker);
+      menu.replaceChildren();
+      Object.entries(groups).forEach(([category, label]) => {
+        const fonts = readyFonts().filter(font => font.category === category);
+        if (!fonts.length) return;
+        const heading = document.createElement('div');
+        heading.className = 'font-picker-group';
+        heading.textContent = label;
+        menu.append(heading);
+        fonts.forEach(font => {
+          const option = document.createElement('button');
+          option.type = 'button';
+          option.className = 'font-picker-option';
+          option.dataset.value = font.id;
+          option.setAttribute('role', 'option');
+          option.style.fontFamily = font.cssFamily;
+          option.textContent = font.name;
+          option.addEventListener('click', () => {
+            select.value = font.id;
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+            picker.open = false;
+          });
+          menu.append(option);
+        });
+      });
+    });
+    syncFontPickers();
+  }
+
+  function syncFontPickers() {
+    $$('[data-font-picker]').forEach(picker => {
+      const select = document.getElementById(picker.dataset.select);
+      const font = fontById(select.value);
+      const value = $('.font-picker-value', picker);
+      value.textContent = font?.name || 'Choose a font';
+      value.style.fontFamily = font?.cssFamily || '';
+      $$('.font-picker-option', picker).forEach(option => option.setAttribute('aria-selected', option.dataset.value === select.value));
+    });
   }
 
   function renderPreview(animate = false) {
@@ -72,6 +117,7 @@
     els.previewHeading.style.fontFamily = heading.cssFamily;
     els.previewBody.style.fontFamily = body.cssFamily;
     els.pairingLabel.textContent = `${heading.name} × ${body.name}`;
+    syncFontPickers();
     renderHighlightedBody();
     if (animate) {
       els.previewCard.classList.remove("refresh");
@@ -183,8 +229,28 @@
   }
 
   function openDialog(mode = "google") {
-    setDialogMode(mode); els.dialogStatus.textContent = ""; els.dialog.showModal();
+    setDialogMode(mode); els.dialogStatus.textContent = ""; clearFormErrors(els.dialog); els.dialog.showModal();
   }
+
+  function setFieldError(input, message) {
+    const row = input.closest('.form-row') || input.closest('label');
+    if (!row) return;
+    row.classList.add('field-error');
+    input.setAttribute('aria-invalid', 'true');
+    let helper = $('.field-message', row);
+    if (!helper) { helper = document.createElement('p'); helper.className = 'field-message'; row.append(helper); }
+    helper.textContent = message;
+  }
+
+  function clearFieldError(input) {
+    const row = input.closest('.form-row') || input.closest('label');
+    if (!row) return;
+    row.classList.remove('field-error');
+    input.removeAttribute('aria-invalid');
+    $('.field-message', row)?.remove();
+  }
+
+  function clearFormErrors(root) { $$('input[aria-invalid="true"]', root).forEach(clearFieldError); }
 
   function setDialogMode(mode) {
     $$('[data-mode-tab]').forEach(button => { const active = button.dataset.modeTab === mode; button.classList.toggle("active", active); button.setAttribute("aria-selected", active); });
@@ -254,21 +320,36 @@
   $$('[data-mode-tab]').forEach(button => button.addEventListener("click", () => setDialogMode(button.dataset.modeTab)));
   els.finder.addEventListener("click", event => { event.preventDefault(); els.dialogStatus.textContent = "Drag Font Finder to your bookmarks bar, then use it on another webpage."; });
   els.theme.addEventListener("click", () => { document.documentElement.dataset.theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark"; updateThemeLabel(); saveState(); });
+  $$('[data-font-picker]').forEach(picker => picker.addEventListener('toggle', () => {
+    if (picker.open) $$('[data-font-picker]').filter(other => other !== picker).forEach(other => { other.open = false; });
+  }));
+  document.addEventListener('click', event => {
+    if (!event.target.closest('[data-font-picker]')) $$('[data-font-picker][open]').forEach(picker => { picker.open = false; });
+  });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') $$('[data-font-picker][open]').forEach(picker => { picker.open = false; }); });
+  $$('form input').forEach(input => input.addEventListener('input', () => clearFieldError(input)));
 
   els.googleForm.addEventListener("submit", event => {
     event.preventDefault(); const data = new FormData(els.googleForm); const name = String(data.get("name")).trim(); const cssUrl = String(data.get("cssUrl")).trim();
+    clearFormErrors(els.googleForm);
+    const nameInput = els.googleForm.elements.name; const urlInput = els.googleForm.elements.cssUrl;
+    if (!name) { setFieldError(nameInput, "Add the font’s display name."); nameInput.focus(); return; }
+    if (!cssUrl) { setFieldError(urlInput, "Paste the font’s stylesheet URL."); urlInput.focus(); return; }
     try {
       const url = new URL(cssUrl);
       const approved = url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.bunny.net" || (url.hostname === "cdn.jsdelivr.net" && url.pathname.includes("fontsource"));
       if (!approved || url.protocol !== "https:") throw new Error();
-    } catch { els.dialogStatus.textContent = "Use an HTTPS stylesheet from Google Fonts, Bunny Fonts, or Fontsource on jsDelivr."; return; }
+    } catch { setFieldError(urlInput, "Use an HTTPS stylesheet from Google Fonts, Bunny Fonts, or Fontsource."); urlInput.focus(); return; }
     addUserFont({ id: `user-${slugify(name)}`, name, category: data.get("category"), status: "ready", cssFamily: `"${name}", ${data.get("category") === "serif" ? "serif" : "sans-serif"}`, cssUrl, sourceUrl: cssUrl, license: "user-provided" });
     els.dialogStatus.textContent = `${name} is ready to mix in this browser.`; showToast(`${name} added`); els.googleForm.reset();
   });
 
   els.localForm.addEventListener("submit", async event => {
     event.preventDefault(); const data = new FormData(els.localForm); const file = data.get("file"); const name = String(data.get("name")).trim();
-    if (!(file instanceof File) || !file.size) return;
+    clearFormErrors(els.localForm);
+    const nameInput = els.localForm.elements.name; const fileInput = els.localForm.elements.file;
+    if (!name) { setFieldError(nameInput, "Add a name for this font."); nameInput.focus(); return; }
+    if (!(file instanceof File) || !file.size) { setFieldError(fileInput, "Choose a WOFF2, WOFF, TTF, or OTF file."); fileInput.focus(); return; }
     try {
       const url = URL.createObjectURL(file); const face = new FontFace(name, `url(${url})`); await face.load(); document.fonts.add(face);
       sessionFonts.push({ id: `session-${slugify(name)}-${Date.now()}`, name, category: data.get("category"), status: "ready", cssFamily: `"${name}", sans-serif`, userAdded: true, sessionOnly: true });

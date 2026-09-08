@@ -52,13 +52,21 @@
         <div class="workbench">
           <div class="control-panel">
             <div class="control-group">
-              <label for="heading-font">Heading</label>
-              <div class="select-wrap"><select id="heading-font"></select></div>
+              <span class="control-label">Heading</span>
+              <details class="font-picker" data-font-picker data-select="heading-font">
+                <summary aria-label="Choose heading font"><span class="font-picker-value"></span><span class="font-picker-chevron" aria-hidden="true"></span></summary>
+                <div class="font-picker-reveal"><div class="font-picker-menu" role="listbox" aria-label="Heading fonts"></div></div>
+              </details>
+              <select id="heading-font" class="visually-hidden" tabindex="-1" aria-hidden="true"></select>
             </div>
             <button class="swap-button" id="swap-fonts" type="button" aria-label="Swap heading and body fonts">↕ <span>Swap</span></button>
             <div class="control-group">
-              <label for="body-font">Body</label>
-              <div class="select-wrap"><select id="body-font"></select></div>
+              <span class="control-label">Body</span>
+              <details class="font-picker" data-font-picker data-select="body-font">
+                <summary aria-label="Choose body font"><span class="font-picker-value"></span><span class="font-picker-chevron" aria-hidden="true"></span></summary>
+                <div class="font-picker-reveal"><div class="font-picker-menu" role="listbox" aria-label="Body fonts"></div></div>
+              </details>
+              <select id="body-font" class="visually-hidden" tabindex="-1" aria-hidden="true"></select>
             </div>
 
             <div class="divider"></div>
@@ -140,10 +148,10 @@
 
     <section class="dialog-panel active" data-mode-panel="google">
       <p class="panel-intro">Paste a stylesheet URL from Google Fonts, Bunny Fonts, or Fontsource. The font is saved only in this browser.</p>
-      <form id="google-font-form">
-        <label>Font name<input name="name" type="text" required placeholder="e.g. Lora"></label>
-        <label>Font stylesheet URL<input name="cssUrl" type="url" required placeholder="https://fonts.googleapis.com/css2?family=..."></label>
-        <label>Category<select name="category"><option value="serif">Serif</option><option value="sans">Sans serif</option><option value="mono">Monospace</option><option value="display">Display</option></select></label>
+      <form id="google-font-form" novalidate>
+        <div class="form-row"><label class="label-input"><input name="name" type="text" placeholder=" " autocomplete="off"><span>Font name</span></label></div>
+        <div class="form-row"><label class="label-input"><input name="cssUrl" type="url" placeholder=" " autocomplete="url"><span>Font stylesheet URL</span></label></div>
+        <label class="select-field"><span>Category</span><select name="category"><option value="serif">Serif</option><option value="sans">Sans serif</option><option value="mono">Monospace</option><option value="display">Display</option></select></label>
         <button class="button" type="submit">Add to my library</button>
       </form>
     </section>
@@ -161,8 +169,8 @@
 
     <section class="dialog-panel" data-mode-panel="local">
       <p class="panel-intro">Try a licensed font without uploading it anywhere. Local files last until this tab closes.</p>
-      <form id="local-font-form">
-        <label>Font name<input name="name" type="text" required placeholder="My licensed font"></label>
+      <form id="local-font-form" novalidate>
+        <div class="form-row"><label class="label-input"><input name="name" type="text" placeholder=" " autocomplete="off"><span>Font name</span></label></div>
         <label>Font file<input name="file" type="file" accept=".woff2,.woff,.ttf,.otf" required></label>
         <label>Category<select name="category"><option value="serif">Serif</option><option value="sans">Sans serif</option><option value="mono">Monospace</option><option value="display">Display</option></select></label>
         <button class="button" type="submit">Try for this session</button>
