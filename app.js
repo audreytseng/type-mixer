@@ -163,8 +163,16 @@
       const specimen = document.createElement("p"); specimen.className = "specimen"; specimen.style.fontFamily = font.cssFamily; specimen.textContent = "Ideas that feel human.";
       const foot = document.createElement("div"); foot.className = "font-card-foot";
       const name = document.createElement("strong"); name.textContent = font.name; foot.append(name);
-      const url = font.sourceUrl || font.exampleUrl;
-      if (url) { const link = document.createElement("a"); link.href = url; link.target = "_blank"; link.rel = "noreferrer"; link.textContent = "source ↗"; foot.append(link); }
+      const links = document.createElement("span"); links.className = "font-card-links";
+      if (font.sourceUrl) {
+        const source = document.createElement("a"); source.href = font.sourceUrl; source.target = "_blank"; source.rel = "noreferrer";
+        source.textContent = `${font.actionLabel || "source"} ↗`; links.append(source);
+      }
+      if (font.exampleUrl && font.exampleUrl !== font.sourceUrl) {
+        const example = document.createElement("a"); example.href = font.exampleUrl; example.target = "_blank"; example.rel = "noreferrer";
+        example.textContent = "example ↗"; links.append(example);
+      }
+      if (links.childElementCount) foot.append(links);
       card.append(top, specimen, foot); els.grid.append(card);
     });
   }
@@ -226,8 +234,12 @@
   els.swap.addEventListener("click", () => { const old = els.headingSelect.value; els.headingSelect.value = els.bodySelect.value; els.bodySelect.value = old; renderPreview(true); });
   els.randomize.addEventListener("click", () => {
     const fonts = readyFonts(); if (fonts.length < 2) return;
-    const heading = fonts[Math.floor(Math.random() * fonts.length)]; let body = fonts[Math.floor(Math.random() * fonts.length)];
-    if (body.id === heading.id) body = fonts[(fonts.indexOf(body) + 1) % fonts.length];
+    const currentPair = `${els.headingSelect.value}:${els.bodySelect.value}`;
+    const pairs = fonts.flatMap(heading => fonts
+      .filter(body => body.id !== heading.id)
+      .map(body => ({ heading, body, key: `${heading.id}:${body.id}` })));
+    const choices = pairs.filter(pair => pair.key !== currentPair);
+    const { heading, body } = choices[Math.floor(Math.random() * choices.length)];
     els.headingSelect.value = heading.id; els.bodySelect.value = body.id; renderPreview(true); showToast(`${heading.name} × ${body.name}`);
   });
   $$(".swatch").forEach(button => button.addEventListener("click", () => setColor(button.dataset.color)));

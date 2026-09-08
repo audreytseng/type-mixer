@@ -80,6 +80,8 @@ window.TYPE_MIXER_FONTS = [
     category: "serif",
     status: "reference",
     cssFamily: 'Georgia, serif',
+    sourceUrl: "https://displaay.net/typeface/reckless",
+    actionLabel: "Get trial",
     exampleUrl: "https://www.blunarova.com/about",
     license: "custom"
   },
@@ -89,6 +91,8 @@ window.TYPE_MIXER_FONTS = [
     category: "sans",
     status: "reference",
     cssFamily: 'Arial, sans-serif',
+    sourceUrl: "https://pangrampangram.com/products/neue-montreal",
+    actionLabel: "Get trial",
     exampleUrl: "https://www.blunarova.com/about",
     license: "commercial"
   },
@@ -98,6 +102,8 @@ window.TYPE_MIXER_FONTS = [
     category: "sans",
     status: "reference",
     cssFamily: 'Arial, sans-serif',
+    sourceUrl: "https://www.myfonts.com/collections/apercu-font-colophon-foundry?tab=licensing",
+    actionLabel: "View license",
     exampleUrl: "https://www.paulinew.ee/about",
     license: "commercial"
   },
@@ -107,6 +113,8 @@ window.TYPE_MIXER_FONTS = [
     category: "sans",
     status: "reference",
     cssFamily: 'Arial, sans-serif',
+    sourceUrl: "https://are.al.are.na/",
+    actionLabel: "Official source",
     exampleUrl: "https://dhrv.cloud/3d?w=Clear",
     license: "commercial"
   },
@@ -116,6 +124,8 @@ window.TYPE_MIXER_FONTS = [
     category: "mono",
     status: "reference",
     cssFamily: 'ui-monospace, "SFMono-Regular", monospace',
+    sourceUrl: "https://usgraphics.com/products/berkeley-mono",
+    actionLabel: "Get trial",
     license: "commercial"
   }
 ];

@@ -131,6 +131,7 @@ select:focus, input:focus, textarea:focus { border-color: var(--accent); box-sha
 .font-card-top { color: var(--muted); font: 10px/1.4 var(--mono); text-transform: uppercase; }
 .font-card .specimen { margin: auto 0; font-size: clamp(26px, 3vw, 42px); line-height: 1.05; letter-spacing: -.025em; }
 .font-card-foot { font-size: 11px; }
+.font-card-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px 10px; }
 .font-card-foot a { color: var(--muted); text-decoration: none; }
 .font-card-foot a:hover { color: var(--ink); }
 .badge { border: 1px solid var(--line); border-radius: 4px; padding: 4px 7px; background: var(--surface-strong); }
