@@ -90,7 +90,7 @@
           option.addEventListener('click', () => {
             select.value = font.id;
             select.dispatchEvent(new Event('change', { bubbles: true }));
-            picker.open = false;
+            setFontPickerOpen(picker, false);
           });
           menu.append(option);
         });
@@ -106,8 +106,18 @@
       const value = $('.font-picker-value', picker);
       value.textContent = font?.name || 'Choose a font';
       value.style.fontFamily = font?.cssFamily || '';
+      $('.t-acc-head', picker).setAttribute('aria-label', `${select.id === 'heading-font' ? 'Heading' : 'Body'} font: ${font?.name || 'not selected'}`);
       $$('.font-picker-option', picker).forEach(option => option.setAttribute('aria-selected', option.dataset.value === select.value));
     });
+  }
+
+  function setFontPickerOpen(picker, open) {
+    if (open) {
+      $$('[data-font-picker]').filter(other => other !== picker).forEach(other => setFontPickerOpen(other, false));
+    }
+    picker.dataset.open = String(open);
+    $('.t-acc-head', picker).setAttribute('aria-expanded', String(open));
+    $('.t-acc-panel', picker).setAttribute('aria-hidden', String(!open));
   }
 
   function renderPreview(animate = false) {
@@ -320,13 +330,13 @@
   $$('[data-mode-tab]').forEach(button => button.addEventListener("click", () => setDialogMode(button.dataset.modeTab)));
   els.finder.addEventListener("click", event => { event.preventDefault(); els.dialogStatus.textContent = "Drag Font Finder to your bookmarks bar, then use it on another webpage."; });
   els.theme.addEventListener("click", () => { document.documentElement.dataset.theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark"; updateThemeLabel(); saveState(); });
-  $$('[data-font-picker]').forEach(picker => picker.addEventListener('toggle', () => {
-    if (picker.open) $$('[data-font-picker]').filter(other => other !== picker).forEach(other => { other.open = false; });
+  $$('[data-font-picker]').forEach(picker => $('.t-acc-head', picker).addEventListener('click', () => {
+    setFontPickerOpen(picker, picker.dataset.open !== 'true');
   }));
   document.addEventListener('click', event => {
-    if (!event.target.closest('[data-font-picker]')) $$('[data-font-picker][open]').forEach(picker => { picker.open = false; });
+    if (!event.target.closest('[data-font-picker]')) $$('[data-font-picker][data-open="true"]').forEach(picker => setFontPickerOpen(picker, false));
   });
-  document.addEventListener('keydown', event => { if (event.key === 'Escape') $$('[data-font-picker][open]').forEach(picker => { picker.open = false; }); });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') $$('[data-font-picker][data-open="true"]').forEach(picker => setFontPickerOpen(picker, false)); });
   $$('form input').forEach(input => input.addEventListener('input', () => clearFieldError(input)));
 
   els.googleForm.addEventListener("submit", event => {
