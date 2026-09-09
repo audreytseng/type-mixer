@@ -311,6 +311,32 @@
 
   function updateThemeLabel() { els.themeLabel.textContent = document.documentElement.dataset.theme === "dark" ? "Light mode" : "Dark mode"; }
 
+  function setupHookSidebar() {
+    const nav = $('[data-hook-sidebar]');
+    if (!nav) return;
+    const items = $$('.hook-items > a, .hook-items > button', nav);
+    const railHeight = item => {
+      const navRect = nav.getBoundingClientRect();
+      const itemRect = item.getBoundingClientRect();
+      return Math.max(10, itemRect.top - navRect.top - 30 + itemRect.height / 2);
+    };
+    const setActive = item => {
+      items.forEach(candidate => candidate.classList.toggle('active', candidate === item));
+      nav.style.setProperty('--active-rail', `${railHeight(item)}px`);
+    };
+    const currentHash = location.hash;
+    const initial = items.find(item => item.getAttribute('href') === currentHash) || $('.active', nav) || items[0];
+    setActive(initial);
+    items.forEach(item => {
+      item.addEventListener('click', () => setActive(item));
+      item.addEventListener('mouseenter', () => { nav.style.setProperty('--hover-rail', `${railHeight(item)}px`); nav.classList.add('is-hovering'); });
+      item.addEventListener('focus', () => { nav.style.setProperty('--hover-rail', `${railHeight(item)}px`); nav.classList.add('is-hovering'); });
+    });
+    nav.addEventListener('mouseleave', () => nav.classList.remove('is-hovering'));
+    nav.addEventListener('focusout', event => { if (!nav.contains(event.relatedTarget)) nav.classList.remove('is-hovering'); });
+    window.addEventListener('resize', () => setActive($('.active', nav) || items[0]));
+  }
+
   els.headingSelect.addEventListener("change", () => renderPreview(true));
   els.bodySelect.addEventListener("change", () => renderPreview(true));
   els.headlineInput.addEventListener("input", () => renderPreview());
@@ -414,5 +440,5 @@
     window.open(`https://github.com/audreytseng/type-mixer/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`, "_blank", "noopener,noreferrer");
   });
 
-  loadStyles(); restoreState(); setupBookmarklet(); renderPreview(); renderLibrary();
+  loadStyles(); restoreState(); setupBookmarklet(); setupHookSidebar(); renderPreview(); renderLibrary();
 })();

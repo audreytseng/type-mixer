@@ -22,11 +22,16 @@
         <span><strong>Type Mixer</strong><small>pair · collect · play</small></span>
       </a>
 
-      <nav class="side-nav" aria-label="Sections">
-        <a class="active" href="#mixer"><span>01</span>Mixer</a>
-        <a href="#library"><span>02</span>Font library</a>
-        <button type="button" data-open-add><span>03</span>Add a font</button>
-        <a href="#how-it-works"><span>04</span>How it works</a>
+      <nav class="side-nav hook-sidebar" aria-label="Sections" data-hook-sidebar>
+        <span class="hook-label">Explore</span>
+        <span class="hook-rail hook-rail-hover" aria-hidden="true"></span>
+        <span class="hook-rail hook-rail-active" aria-hidden="true"></span>
+        <div class="hook-items">
+          <a class="active" href="#mixer"><span>01</span>Mixer</a>
+          <a href="#library"><span>02</span>Font library</a>
+          <button type="button" data-open-add><span>03</span>Add a font</button>
+          <a href="#how-it-works"><span>04</span>How it works</a>
+        </div>
       </nav>
 
       <div class="sidebar-foot">
@@ -45,7 +50,7 @@
 
       <section id="mixer" class="section mixer-section" aria-labelledby="mixer-title">
         <div class="section-heading">
-          <div><span class="eyebrow">01 · workbench</span><h1 id="mixer-title">Find a pairing that <span class="marker">feels like you.</span></h1></div>
+          <div><span class="eyebrow">01 · workbench</span><h1 id="mixer-title">find your <span class="marker">font pairing!</span></h1></div>
           <button class="button" id="randomize" type="button">Surprise me</button>
         </div>
 
