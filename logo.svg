@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="34" fill="#f1f1ee"/>
+  <rect x="4" y="4" width="120" height="120" rx="30" fill="none" stroke="#aab2b8" stroke-width="4"/>
+  <text x="64" y="77" fill="#713e43" font-family="'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Arial Rounded MT Bold',sans-serif" font-size="58" font-weight="800" letter-spacing="-12" text-anchor="middle">てみ</text>
+</svg>

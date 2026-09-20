@@ -46,7 +46,7 @@ a { color: inherit; }
 .shell { min-height: 100vh; display: grid; grid-template-columns: 248px minmax(0, 1fr); }
 .sidebar { position: sticky; top: 0; height: 100vh; padding: 28px 22px; border-right: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 92%, transparent); display: flex; flex-direction: column; z-index: 10; }
 .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-.brand-mark { width: 42px; height: 42px; border: 1px solid var(--line-strong); border-radius: 8px 10px 7px 9px; display: grid; place-items: center; font: 500 18px/1 "Instrument Serif", serif; background: var(--surface-strong); transform: rotate(-1deg); box-shadow: 3px 3px 0 var(--cool); }
+.brand-mark { width: 46px; height: 46px; border: 1px solid var(--line-strong); border-radius: 14px; display: grid; place-items: center; padding-right: .18em; color: var(--accent); font: 800 22px/1 "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", sans-serif; letter-spacing: -.18em; background: var(--surface-strong); transform: rotate(-1deg); box-shadow: 3px 3px 0 var(--cool); }
 .brand strong, .brand small { display: block; }
 .brand strong { font-size: 15px; letter-spacing: -.02em; }
 .brand small { margin-top: 2px; color: var(--muted); font: 11px/1.3 var(--mono); }
