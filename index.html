@@ -37,7 +37,7 @@
       </nav>
 
       <div class="sidebar-foot">
-        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
           <span aria-hidden="true">◐</span><span class="theme-label">Dark mode</span>
         </button>
         <a href="https://github.com/audreytseng/type-mixer" target="_blank" rel="noreferrer">View source ↗</a>
@@ -125,18 +125,18 @@
         </div>
         <div class="library-toolbar">
           <div class="filter-pills" role="tablist" aria-label="Filter fonts">
-            <button class="active" type="button" data-filter="all" role="tab" aria-selected="true">All</button>
-            <button type="button" data-filter="ready" role="tab" aria-selected="false">Ready to mix</button>
-            <button type="button" data-filter="reference" role="tab" aria-selected="false">Reference</button>
-            <button type="button" data-filter="mine" role="tab" aria-selected="false">My fonts</button>
+            <button class="active" type="button" data-filter="all" role="tab" aria-controls="font-grid" aria-selected="true">All</button>
+            <button type="button" data-filter="ready" role="tab" aria-controls="font-grid" aria-selected="false">Ready to mix</button>
+            <button type="button" data-filter="reference" role="tab" aria-controls="font-grid" aria-selected="false">Reference</button>
+            <button type="button" data-filter="mine" role="tab" aria-controls="font-grid" aria-selected="false">My fonts</button>
           </div>
-          <label class="search"><span aria-hidden="true">⌕</span><input id="font-search" type="search" placeholder="Search fonts"></label>
+          <label class="search"><span aria-hidden="true">⌕</span><input id="font-search" type="search" placeholder="Search fonts" aria-label="Search fonts"></label>
         </div>
         <div class="font-grid" id="font-grid"></div>
       </section>
 
       <section id="how-it-works" class="section how-section" aria-labelledby="how-title">
-        <div class="section-heading compact"><div><span class="eyebrow">03 · collect</span><h2 id="how-title">Bring your finds with you.</h2></div></div>
+        <div class="section-heading compact"><div><span class="eyebrow">04 · collect</span><h2 id="how-title">Bring your finds with you.</h2></div></div>
         <div class="how-grid">
           <article><span>01</span><h3>Try it now</h3><p>Add a Google Font or a local font file. Your experiments stay in this browser.</p><button class="text-button" type="button" data-open-add data-mode="google">Add a font →</button></article>
           <article><span>02</span><h3>Find it on a webpage</h3><p>Use the tiny bookmarklet to collect rendered font names and the page they came from.</p><button class="text-button" type="button" data-open-add data-mode="webpage">Get the font finder →</button></article>
@@ -154,15 +154,15 @@
       <button class="icon-button" id="close-dialog" type="button" aria-label="Close">×</button>
     </div>
     <div class="dialog-tabs" role="tablist" aria-label="Add font method">
-      <button class="active" type="button" role="tab" data-mode-tab="google" aria-selected="true">Web font</button>
-      <button type="button" role="tab" data-mode-tab="webpage" aria-selected="false">From a webpage</button>
-      <button type="button" role="tab" data-mode-tab="local" aria-selected="false">Local file</button>
+      <button class="active" id="add-tab-google" type="button" role="tab" data-mode-tab="google" aria-controls="add-panel-google" aria-selected="true">Web font</button>
+      <button id="add-tab-webpage" type="button" role="tab" data-mode-tab="webpage" aria-controls="add-panel-webpage" aria-selected="false">From a webpage</button>
+      <button id="add-tab-local" type="button" role="tab" data-mode-tab="local" aria-controls="add-panel-local" aria-selected="false">Local file</button>
     </div>
 
-    <section class="dialog-panel active" data-mode-panel="google">
-      <p class="panel-intro">Paste a stylesheet URL from Google Fonts, Bunny Fonts, or Fontsource. The font is saved only in this browser.</p>
+    <section class="dialog-panel active" id="add-panel-google" role="tabpanel" aria-labelledby="add-tab-google" data-mode-panel="google">
+      <p class="panel-intro">Paste a stylesheet URL from Google Fonts, Bunny Fonts, or Fontsource. Use the exact font-family name from that stylesheet. The font is saved only in this browser.</p>
       <form id="google-font-form" novalidate>
-        <div class="form-row"><label class="label-input"><input name="name" type="text" placeholder=" " autocomplete="off"><span>Font name</span></label></div>
+        <div class="form-row"><label class="label-input"><input name="name" type="text" placeholder=" " autocomplete="off"><span>Font-family name</span></label></div>
         <div class="form-row"><label class="label-input"><input name="cssUrl" type="url" placeholder=" " autocomplete="url"><span>Font stylesheet URL</span></label></div>
         <div class="select-field">
           <span>Category</span>
@@ -176,7 +176,7 @@
       </form>
     </section>
 
-    <section class="dialog-panel" data-mode-panel="webpage">
+    <section class="dialog-panel" id="add-panel-webpage" role="tabpanel" aria-labelledby="add-tab-webpage" data-mode-panel="webpage" hidden>
       <p class="panel-intro">Drag this button to your bookmarks bar. Click it on any webpage, then paste the result below.</p>
       <div class="code-block" data-code-block>
         <div class="code-block-head"><span>font-finder.js</span><button type="button" id="copy-finder-code" aria-label="Copy Font Finder code"><span>Copy</span><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="8" height="8" rx="1.5" stroke="currentColor"/><path d="M3 10.5H2.5A1.5 1.5 0 0 1 1 9V2.5A1.5 1.5 0 0 1 2.5 1H9a1.5 1.5 0 0 1 1.5 1.5V3" stroke="currentColor"/></svg></button></div>
@@ -193,7 +193,7 @@ copy({ sourceUrl: location.href, fonts });</code></pre>
       </div>
     </section>
 
-    <section class="dialog-panel" data-mode-panel="local">
+    <section class="dialog-panel" id="add-panel-local" role="tabpanel" aria-labelledby="add-tab-local" data-mode-panel="local" hidden>
       <p class="panel-intro">Try a licensed font without uploading it anywhere. Local files last until this tab closes.</p>
       <form id="local-font-form" novalidate>
         <div class="form-row"><label class="label-input"><input name="name" type="text" placeholder=" " autocomplete="off"><span>Font name</span></label></div>

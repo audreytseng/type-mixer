@@ -42,9 +42,19 @@ The **Add a font** panel supports:
 
 Browser-only additions use local storage. The app has no account, analytics, backend, or font-file uploads.
 
+## Suggest or contribute a font
+
+Open **Add a font → From a webpage** to collect font names from a site and create a prefilled GitHub issue. For a permanent catalog addition, update `fonts.js` and include the font's official source, license, and an example site.
+
+Only freely embeddable fonts should use `status: "ready"`. Keep commercial, custom, and unverified typefaces as `status: "reference"`, and never commit licensed font files without redistribution permission.
+
 ## Files
 
 - `index.html` — accessible page structure and metadata.
 - `styles.css` — responsive light/dark visual system and animations.
 - `fonts.js` — data-driven public font catalog.
 - `app.js` — pairing, highlighting, library, import, bookmarklet, and persistence behavior.
+
+## License
+
+Type Mixer is available under the [MIT License](./LICENSE). Font files and typefaces linked or referenced by the project retain their own licenses.
