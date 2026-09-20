@@ -424,6 +424,9 @@
     const nav = $('[data-hook-sidebar]');
     if (!nav) return;
     const items = $$('.hook-items > a, .hook-items > button', nav);
+    const sectionLinks = items.filter(item => item.matches('a[href^="#"]'));
+    let navigationTarget = null;
+    let navigationReleaseTimer;
     const railHeight = item => {
       const navRect = nav.getBoundingClientRect();
       const itemRect = item.getBoundingClientRect();
@@ -433,13 +436,44 @@
       items.forEach(candidate => candidate.classList.toggle('active', candidate === item));
       nav.style.setProperty('--active-rail', `${railHeight(item)}px`);
     };
+    const activeFromScroll = () => {
+      const atPageEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      if (atPageEnd) return sectionLinks[sectionLinks.length - 1];
+      return [...sectionLinks].reverse().find(item => {
+        const section = document.querySelector(item.getAttribute('href'));
+        return section && section.getBoundingClientRect().top <= 180;
+      }) || sectionLinks[0];
+    };
+    const syncActiveFromScroll = () => {
+      const active = activeFromScroll();
+      if (active) setActive(active);
+    };
+    const releaseNavigationTarget = () => {
+      navigationTarget = null;
+      window.clearTimeout(navigationReleaseTimer);
+      syncActiveFromScroll();
+    };
+    const holdNavigationTarget = item => {
+      navigationTarget = item;
+      setActive(item);
+      window.clearTimeout(navigationReleaseTimer);
+      navigationReleaseTimer = window.setTimeout(releaseNavigationTarget, 900);
+    };
+    const releaseAfterScrollSettles = () => {
+      window.clearTimeout(navigationReleaseTimer);
+      navigationReleaseTimer = window.setTimeout(releaseNavigationTarget, 180);
+    };
     const currentHash = location.hash;
     const initial = items.find(item => item.getAttribute('href') === currentHash) || $('.active', nav) || items[0];
     setActive(initial);
     items.forEach(item => {
-      if (item.matches('a[href^="#"]')) item.addEventListener('click', () => setActive(item));
+      if (item.matches('a[href^="#"]')) item.addEventListener('click', () => holdNavigationTarget(item));
       item.addEventListener('mouseenter', () => { nav.style.setProperty('--hover-rail', `${railHeight(item)}px`); nav.classList.add('is-hovering'); });
       item.addEventListener('focus', () => { nav.style.setProperty('--hover-rail', `${railHeight(item)}px`); nav.classList.add('is-hovering'); });
+    });
+    $('.brand[href^="#"]')?.addEventListener('click', event => {
+      const target = sectionLinks.find(item => item.getAttribute('href') === event.currentTarget.getAttribute('href'));
+      if (target) holdNavigationTarget(target);
     });
     nav.addEventListener('mouseleave', () => nav.classList.remove('is-hovering'));
     nav.addEventListener('focusout', event => { if (!nav.contains(event.relatedTarget)) nav.classList.remove('is-hovering'); });
@@ -448,12 +482,12 @@
       if (scrollQueued) return;
       scrollQueued = true;
       requestAnimationFrame(() => {
-        const sectionLinks = items.filter(item => item.matches('a[href^="#"]'));
-        const active = [...sectionLinks].reverse().find(item => {
-          const section = document.querySelector(item.getAttribute('href'));
-          return section && section.getBoundingClientRect().top <= 180;
-        }) || sectionLinks[0];
-        if (active) setActive(active);
+        if (navigationTarget) {
+          setActive(navigationTarget);
+          releaseAfterScrollSettles();
+        } else {
+          syncActiveFromScroll();
+        }
         scrollQueued = false;
       });
     }, { passive: true });
