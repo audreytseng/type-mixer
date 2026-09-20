@@ -156,7 +156,7 @@
     <div class="dialog-tabs" role="tablist" aria-label="Add font method">
       <button class="active" id="add-tab-google" type="button" role="tab" data-mode-tab="google" aria-controls="add-panel-google" aria-selected="true">Web font</button>
       <button id="add-tab-webpage" type="button" role="tab" data-mode-tab="webpage" aria-controls="add-panel-webpage" aria-selected="false">From a webpage</button>
-      <button id="add-tab-local" type="button" role="tab" data-mode-tab="local" aria-controls="add-panel-local" aria-selected="false">Local file</button>
+      <button id="add-tab-local" type="button" role="tab" data-mode-tab="local" aria-controls="add-panel-local" aria-selected="false">Load a local font</button>
     </div>
 
     <section class="dialog-panel active" id="add-panel-google" role="tabpanel" aria-labelledby="add-tab-google" data-mode-panel="google">
@@ -194,7 +194,7 @@ copy({ sourceUrl: location.href, fonts });</code></pre>
     </section>
 
     <section class="dialog-panel" id="add-panel-local" role="tabpanel" aria-labelledby="add-tab-local" data-mode-panel="local" hidden>
-      <p class="panel-intro">Try a licensed font without uploading it anywhere. Local files last until this tab closes.</p>
+      <p class="panel-intro">Loaded only in this tab. Your font file never leaves your device.</p>
       <form id="local-font-form" novalidate>
         <div class="form-row"><label class="label-input"><input name="name" type="text" placeholder=" " autocomplete="off"><span>Font name</span></label></div>
         <label class="file-field"><span>Font file</span><span class="file-control"><input name="file" type="file" accept=".woff2,.woff,.ttf,.otf"><span class="file-button">Choose a font file</span><span class="file-name">No file chosen</span></span></label>
