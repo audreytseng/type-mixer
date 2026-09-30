@@ -8,7 +8,6 @@
   let selectedColor = "#d7c1c3";
   let highlights = [];
   let pendingSelection = null;
-  let detectedPayload = null;
   let toastTimer;
   let fieldErrorId = 0;
 
@@ -20,9 +19,7 @@
     previewCard: $("#preview-card"), pairingLabel: $("#pairing-label"), highlightButton: $("#highlight-selection"), clearHighlights: $("#clear-highlights"),
     colorInput: $("#highlight-color"), highlightStatus: $("#highlight-status"), grid: $("#font-grid"), count: $("#library-count"), search: $("#font-search"),
     dialog: $("#add-dialog"), closeDialog: $("#close-dialog"), dialogStatus: $("#dialog-status"), toast: $("#toast"),
-    googleForm: $("#google-font-form"), localForm: $("#local-font-form"), payload: $("#webpage-payload"), detected: $("#detected-fonts"),
-    saveDetected: $("#save-detected"), suggestGithub: $("#suggest-github"), theme: $("#theme-toggle"), themeLabel: $(".theme-label"), finder: $("#font-finder"),
-    copyFinder: $("#copy-finder-code")
+    googleForm: $("#google-font-form"), localForm: $("#local-font-form"), theme: $("#theme-toggle"), themeLabel: $(".theme-label")
   };
 
   function readJson(key, fallback) {
@@ -46,6 +43,11 @@
 
   function allFonts() { return [...catalog, ...userFonts, ...sessionFonts]; }
   function readyFonts() { return allFonts().filter(font => font.status === "ready"); }
+  function readyFontsByCategory(category) {
+    return readyFonts()
+      .filter(font => font.category === category)
+      .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base", numeric: true }));
+  }
   function fontById(id) { return allFonts().find(font => font.id === id) || readyFonts()[0]; }
 
   function removeUserFont(id) {
@@ -80,7 +82,7 @@
       select.innerHTML = "";
       const groups = { serif: "Serif", sans: "Sans serif", mono: "Monospace", display: "Display" };
       Object.entries(groups).forEach(([key, label]) => {
-        const matches = readyFonts().filter(font => font.category === key);
+        const matches = readyFontsByCategory(key);
         if (!matches.length) return;
         const group = document.createElement("optgroup");
         group.label = label;
@@ -100,7 +102,7 @@
       const menu = $('.font-picker-menu', picker);
       menu.replaceChildren();
       Object.entries(groups).forEach(([category, label]) => {
-        const fonts = readyFonts().filter(font => font.category === category);
+        const fonts = readyFontsByCategory(category);
         if (!fonts.length) return;
         const heading = document.createElement('div');
         heading.className = 'font-picker-group';
@@ -237,9 +239,15 @@
 
   function restoreState() {
     const state = readJson(STORAGE, {});
-    if (Object.prototype.hasOwnProperty.call(state, "headline")) els.headlineInput.value = state.headline;
-    if (Object.prototype.hasOwnProperty.call(state, "copy")) els.bodyInput.value = state.copy;
-    if (Array.isArray(state.highlights)) highlights = state.highlights;
+    const legacyHeadlines = ["Ideas deserve a little room to wander.", "hello! nice to meet you."];
+    const legacyCopies = [
+      "I like turning complicated systems into useful things with thoughtful details. The best products feel clear, human, and a little unexpected.",
+      "let’s explore the wide world of fonts and find a pairing that feels like you.",
+      "there’s a whole world of fonts out there—find a pairing that feels like you."
+    ];
+    if (Object.prototype.hasOwnProperty.call(state, "headline") && !legacyHeadlines.includes(state.headline)) els.headlineInput.value = state.headline;
+    if (Object.prototype.hasOwnProperty.call(state, "copy") && !legacyCopies.includes(state.copy)) els.bodyInput.value = state.copy;
+    if (Array.isArray(state.highlights) && !legacyCopies.includes(state.copy)) highlights = state.highlights;
     if (state.theme === "dark") document.documentElement.dataset.theme = "dark";
     populateSelects(state);
     setColor(state.color || selectedColor, false);
@@ -289,23 +297,20 @@
       const filterMatch = activeFilter === "all" || font.status === activeFilter || (activeFilter === "mine" && font.userAdded);
       return filterMatch && (!query || `${font.name} ${font.category}`.toLowerCase().includes(query));
     });
+    const available = visible.filter(font => font.status !== "reference");
+    const bookmarks = visible.filter(font => font.status === "reference");
     els.grid.replaceChildren();
     els.count.textContent = `${visible.length} of ${allFonts().length} fonts`;
     if (!visible.length) {
       const empty = document.createElement("article"); empty.className = "font-card empty"; empty.textContent = "No fonts match that filter."; els.grid.append(empty); return;
     }
-    visible.forEach((font, index) => {
-      const card = document.createElement("article"); card.className = `font-card${font.status === "reference" ? " reference-card" : ""}`;
+    available.forEach((font, index) => {
+      const card = document.createElement("article"); card.className = "font-card";
       const top = document.createElement("div"); top.className = "font-card-top";
-      top.innerHTML = `<span>${String(index + 1).padStart(2, "0")} · ${font.category}</span><span class="badge ${font.status}">${font.status === "ready" ? "ready" : "reference"}</span>`;
+      top.innerHTML = `<span>${String(index + 1).padStart(2, "0")} · ${font.category}</span><span class="badge ready">ready</span>`;
       const specimen = document.createElement("p"); specimen.className = "specimen";
-      if (font.status === "reference") {
-        specimen.classList.add("reference-note");
-        specimen.textContent = "Preview unavailable";
-      } else {
-        specimen.style.fontFamily = font.cssFamily;
-        specimen.textContent = "Ideas that feel human.";
-      }
+      specimen.style.fontFamily = font.cssFamily;
+      specimen.textContent = "Ideas that feel human.";
       const foot = document.createElement("div"); foot.className = "font-card-foot";
       const name = document.createElement("strong"); name.textContent = font.name; foot.append(name);
       const links = document.createElement("span"); links.className = "font-card-links";
@@ -322,13 +327,36 @@
       }
       if (links.childElementCount) foot.append(links);
       card.append(top, specimen);
-      if (font.status === "reference") {
-        const note = document.createElement("p"); note.className = "reference-help"; note.textContent = "Add a licensed web or local file to try this font."; card.append(note);
-      } else {
-        const action = document.createElement("button"); action.type = "button"; action.className = "font-card-action"; action.dataset.useFont = font.id; action.textContent = "Try as heading →"; card.append(action);
-      }
+      const action = document.createElement("button"); action.type = "button"; action.className = "font-card-action"; action.dataset.useFont = font.id; action.textContent = "Try as heading →"; card.append(action);
       card.append(foot); els.grid.append(card);
     });
+    if (bookmarks.length) {
+      const section = document.createElement("section"); section.className = "creator-bookmarks"; section.setAttribute("aria-labelledby", "creator-bookmarks-title");
+      const header = document.createElement("div"); header.className = "creator-bookmarks-head";
+      const headingGroup = document.createElement("div");
+      const eyebrow = document.createElement("span"); eyebrow.className = "eyebrow"; eyebrow.textContent = "Bookmarked for inspo";
+      const heading = document.createElement("h3"); heading.id = "creator-bookmarks-title"; heading.textContent = "Creator’s bookmarks";
+      headingGroup.append(eyebrow, heading);
+      const intro = document.createElement("p"); intro.textContent = "Fonts I like, with links to their official source or license.";
+      header.append(headingGroup, intro);
+      const list = document.createElement("div"); list.className = "creator-bookmarks-list";
+      bookmarks.forEach((font, index) => {
+        const row = document.createElement("article"); row.className = "creator-bookmark";
+        const indexLabel = document.createElement("span"); indexLabel.className = "creator-bookmark-index"; indexLabel.textContent = String(index + 1).padStart(2, "0");
+        const name = document.createElement("strong"); name.textContent = font.name;
+        const category = document.createElement("span"); category.className = "creator-bookmark-category"; category.textContent = font.category;
+        row.append(indexLabel, name, category);
+        const actions = document.createElement("span"); actions.className = "creator-bookmark-actions";
+        if (font.sourceUrl) {
+          const source = document.createElement("a"); source.href = font.sourceUrl; source.target = "_blank"; source.rel = "noreferrer"; source.textContent = "Find it ↗"; actions.append(source);
+        }
+        if (font.userAdded) {
+          const remove = document.createElement("button"); remove.type = "button"; remove.dataset.removeFont = font.id; remove.setAttribute("aria-label", `Remove ${font.name}`); remove.textContent = "remove"; actions.append(remove);
+        }
+        row.append(actions); list.append(row);
+      });
+      section.append(header, list); els.grid.append(section);
+    }
   }
 
   function showToast(message) {
@@ -373,32 +401,6 @@
     userFonts = [...userFonts.filter(item => item.id !== font.id), { ...font, userAdded: true }];
     localStorage.setItem(USER_FONTS, JSON.stringify(userFonts));
     loadStyles(); populateSelects(); renderLibrary(); renderPreview();
-  }
-
-  function parsePayload() {
-    const value = els.payload.value.trim();
-    if (!value) { detectedPayload = null; els.detected.replaceChildren(); return; }
-    try {
-      const data = JSON.parse(value);
-      const fonts = [...new Set((data.fonts || []).map(String).map(name => name.trim()).filter(Boolean))];
-      detectedPayload = { sourceUrl: data.sourceUrl || "", title: data.title || "", fonts };
-      els.detected.replaceChildren();
-      fonts.forEach((name, index) => {
-        const label = document.createElement("label");
-        const checkbox = document.createElement("input"); checkbox.type = "checkbox"; checkbox.checked = index < 5; checkbox.value = name;
-        label.append(checkbox, document.createTextNode(name)); els.detected.append(label);
-      });
-      els.dialogStatus.textContent = fonts.length ? `${fonts.length} font names found. Choose what to keep.` : "No font names were found in that result.";
-    } catch { detectedPayload = null; els.detected.replaceChildren(); els.dialogStatus.textContent = "That doesn’t look like a Font Finder result yet."; }
-  }
-
-  function selectedDetectedFonts() { return $$('input[type="checkbox"]:checked', els.detected).map(input => input.value); }
-
-  function setupBookmarklet() {
-    const code = `(()=>{const generic=new Set(['serif','sans-serif','monospace','cursive','fantasy','system-ui','ui-serif','ui-sans-serif','ui-monospace']);const clean=s=>s.trim().replace(/^['\"]|['\"]$/g,'');const fonts=[...new Set([...document.querySelectorAll('*')].flatMap(el=>getComputedStyle(el).fontFamily.split(',').map(clean)).filter(f=>f&&!generic.has(f.toLowerCase())))];prompt('Copy this result into Type Mixer:',JSON.stringify({sourceUrl:location.href,title:document.title,fonts},null,2));})()`;
-    els.finder.href = `javascript:${code}`;
-    els.finder.dataset.code = `javascript:${code}`;
-    els.finder.title = "Drag to your bookmarks bar";
   }
 
   function syncChoicePicker(picker) {
@@ -554,7 +556,6 @@
     const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (current + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
     event.preventDefault(); tabs[next].focus(); tabs[next].click();
   });
-  els.finder.addEventListener("click", event => { event.preventDefault(); els.dialogStatus.textContent = "Drag Font Finder to your bookmarks bar, then use it on another webpage."; });
   els.theme.addEventListener("click", () => { document.documentElement.dataset.theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark"; updateThemeLabel(); saveState(); });
   $$('[data-font-picker], [data-choice-picker]').forEach(picker => {
     $('.t-acc-head', picker).addEventListener('click', () => setAccordionOpen(picker, picker.dataset.open !== 'true'));
@@ -587,14 +588,6 @@
     $$('[data-choice-picker]', form).forEach(syncChoicePicker);
     const fileName = $('.file-name', form); if (fileName) fileName.textContent = 'No file chosen';
   })));
-  els.copyFinder.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(els.finder.dataset.code);
-      $('span', els.copyFinder).textContent = 'Copied'; els.copyFinder.classList.add('copied');
-      setTimeout(() => { $('span', els.copyFinder).textContent = 'Copy'; els.copyFinder.classList.remove('copied'); }, 1800);
-    } catch { showToast('Copy unavailable — drag the button below instead'); }
-  });
-
   els.googleForm.addEventListener("submit", event => {
     event.preventDefault(); const data = new FormData(els.googleForm); const name = String(data.get("name")).trim(); const cssUrl = String(data.get("cssUrl")).trim();
     clearFormErrors(els.googleForm);
@@ -625,18 +618,5 @@
     } catch { els.dialogStatus.textContent = "That font file could not be loaded. Try WOFF2, WOFF, TTF, or OTF."; }
   });
 
-  els.payload.addEventListener("input", parsePayload);
-  els.saveDetected.addEventListener("click", () => {
-    const names = selectedDetectedFonts(); if (!detectedPayload || !names.length) { els.dialogStatus.textContent = "Paste a result and select at least one font."; return; }
-    names.forEach(name => addUserFont({ id: `reference-${slugify(name)}`, name, category: "unknown", status: "reference", cssFamily: "system-ui, sans-serif", exampleUrl: detectedPayload.sourceUrl, license: "unknown" }));
-    els.dialogStatus.textContent = `${names.length} reference ${names.length === 1 ? "font" : "fonts"} saved.`; showToast("References saved");
-  });
-  els.suggestGithub.addEventListener("click", () => {
-    const names = selectedDetectedFonts(); const source = detectedPayload?.sourceUrl || ""; const title = `Font suggestion: ${names.join(", ") || "new font"}`;
-    if (!detectedPayload || !names.length) { els.dialogStatus.textContent = "Paste a result and select at least one font before suggesting it."; return; }
-    const body = `## Font${names.length > 1 ? "s" : ""}\n${names.map(name => `- ${name}`).join("\n") || "- "}\n\n## Example webpage\n${source}\n\n## Official font source / license\n\n`;
-    window.open(`https://github.com/audreytseng/type-mixer/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`, "_blank", "noopener,noreferrer");
-  });
-
-  loadStyles(); restoreState(); setupBookmarklet(); setupHookSidebar(); renderPreview(); renderLibrary();
+  loadStyles(); restoreState(); setupHookSidebar(); renderPreview(); renderLibrary();
 })();

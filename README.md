@@ -1,4 +1,4 @@
-# Type Mixer
+# Meet Your Type
 
 A playful, local-first typography workbench for comparing font pairings, testing highlighted copy, and collecting type inspiration from around the web.
 
@@ -37,14 +37,12 @@ The **Add a font** panel supports:
 
 - Google Fonts, Bunny Fonts, or Fontsource stylesheet URLs saved in the current browser.
 - Local WOFF2, WOFF, TTF, or OTF files loaded for the current tab only.
-- A **Font Finder** bookmarklet that collects rendered family names and the source webpage.
-- A prefilled GitHub issue for permanent font suggestions.
 
 Browser-only additions use local storage. The app has no account, analytics, backend, or font-file uploads.
 
 ## Suggest or contribute a font
 
-Open **Add a font → From a webpage** to collect font names from a site and create a prefilled GitHub issue. For a permanent catalog addition, update `fonts.js` and include the font's official source, license, and an example site.
+Use **Suggest a font** to create a prefilled GitHub issue. For a permanent catalog addition, update `fonts.js` and include the font's official source, license, and an example site.
 
 Only freely embeddable fonts should use `status: "ready"`. Keep commercial, custom, and unverified typefaces as `status: "reference"`, and never commit licensed font files without redistribution permission.
 
@@ -53,8 +51,9 @@ Only freely embeddable fonts should use `status: "ready"`. Keep commercial, cust
 - `index.html` — accessible page structure and metadata.
 - `styles.css` — responsive light/dark visual system and animations.
 - `fonts.js` — data-driven public font catalog.
-- `app.js` — pairing, highlighting, library, import, bookmarklet, and persistence behavior.
+- `app.js` — pairing, highlighting, library, import, and persistence behavior.
+- `assets/fonts/` — project-hosted open font files with their original licenses.
 
 ## License
 
-Type Mixer is available under the [MIT License](./LICENSE). Font files and typefaces linked or referenced by the project retain their own licenses.
+Meet Your Type is available under the [MIT License](./LICENSE). Font files and typefaces linked or referenced by the project retain their own licenses.

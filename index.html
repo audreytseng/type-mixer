@@ -3,25 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Mix typefaces, test pairings, and collect fonts from around the web.">
+  <meta name="description" content="Meet Your Type — discover, mix, and play with font pairings.">
   <meta name="theme-color" content="#f1f1ee">
-  <meta property="og:title" content="Type Mixer">
-  <meta property="og:description" content="A playful, local-first typography workbench.">
-  <title>Type Mixer</title>
+  <meta property="og:title" content="Meet Your Type">
+  <meta property="og:description" content="A playful, local font comparison playground.">
+  <title>Meet Your Type</title>
   <link rel="icon" href="logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@800&display=swap">
-  <link rel="stylesheet" href="styles.css">
-  <script src="fonts.js" defer></script>
-  <script src="app.js" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20260930-hedvig-headings">
+  <script src="fonts.js?v=20260930-open-fonts-2" defer></script>
+  <script src="app.js?v=20260930-alphabetized-fonts" defer></script>
 </head>
 <body>
   <div class="shell">
     <aside class="sidebar">
-      <a class="brand" href="#mixer" aria-label="Type Mixer home">
+      <a class="brand" href="#mixer" aria-label="Meet Your Type home">
         <span class="brand-mark" aria-hidden="true" lang="ja">てみ</span>
-        <span><strong>Type Mixer</strong><small>pair · collect · play</small></span>
+        <span><strong>Meet Your Type</strong><small>discover · mix · play</small></span>
       </a>
 
       <nav class="side-nav hook-sidebar" aria-label="Sections" data-hook-sidebar>
@@ -30,9 +30,9 @@
         <span class="hook-rail hook-rail-active" aria-hidden="true"></span>
         <div class="hook-items">
           <a class="active" href="#mixer"><span>01</span>Mixer</a>
-          <a href="#library"><span>02</span>Font library</a>
-          <button type="button" data-open-add><span>03</span>Add a font</button>
-          <a href="#how-it-works"><span>04</span>How it works</a>
+          <a href="#how-it-works"><span>02</span>How it works</a>
+          <a href="#library"><span>03</span>Find a font</a>
+          <button type="button" data-open-add><span>04</span>Add a font</button>
         </div>
       </nav>
 
@@ -46,7 +46,10 @@
 
     <main>
       <header class="topbar">
-        <p><span class="status-dot"></span> local-first type playground</p>
+        <div class="topbar-intro">
+          <p><span class="status-dot"></span><span lang="ja">てみる</span> · temiru · “try it out”</p>
+          <span>local font comparison playground</span>
+        </div>
         <button class="button quiet" type="button" data-open-add>+ Add a font</button>
       </header>
 
@@ -86,11 +89,11 @@
 
             <div class="control-group">
               <label for="headline-input">Headline</label>
-              <input id="headline-input" type="text" value="Ideas deserve a little room to wander.">
+              <input id="headline-input" type="text" value="hello! let’s find your type.">
             </div>
             <div class="control-group text-control">
               <label for="body-input">Body copy</label>
-              <textarea id="body-input" rows="7">I like turning complicated systems into useful things with thoughtful details. The best products feel clear, human, and a little unexpected.</textarea>
+              <textarea id="body-input" rows="7">there’s a whole world of fonts out there, so find a pairing that feels like you.</textarea>
               <p class="hint">Select words above, then highlight them.</p>
             </div>
 
@@ -104,7 +107,7 @@
                 <input id="highlight-color" type="color" value="#d7c1c3" aria-label="Custom highlight color">
               </div>
             </div>
-            <p class="status" id="highlight-status" aria-live="polite">Ready to mix.</p>
+            <p class="status" id="highlight-status" aria-live="polite"></p>
           </div>
 
           <article class="preview-card" id="preview-card">
@@ -113,21 +116,29 @@
               <h2 id="preview-heading"></h2>
               <p id="preview-body"></p>
             </div>
-            <footer><span>Type Mixer</span><span>ABCDEFGHIJKLMNOPQRSTUVWXYZ · 0123456789</span></footer>
+            <footer><span>Meet Your Type</span><span>ABCDEFGHIJKLMNOPQRSTUVWXYZ · 0123456789</span></footer>
           </article>
+        </div>
+      </section>
+
+      <section id="how-it-works" class="section how-section" aria-labelledby="how-title">
+        <div class="section-heading compact"><div><span class="eyebrow">02 · how it works</span><h2 id="how-title">Bring your own type.</h2></div></div>
+        <div class="how-grid">
+          <article><span>01</span><h3>Try it now</h3><p>Add a Google Font or a local font file for local experimentation scoped to your browser.</p><button class="text-button" type="button" data-open-add data-mode="google">Add a font →</button></article>
+          <article><span>02</span><h3>Suggest it</h3><p>Suggest a font to be added to the public library! If the source and license are free, you'll see it pop up.</p><a class="text-button" href="https://github.com/audreytseng/type-mixer/issues/new?title=Font%20suggestion%3A%20&amp;body=%23%23%20Font%0A-%20%0A%0A%23%23%20Official%20font%20source%0A%0A%23%23%20License%0A" target="_blank" rel="noreferrer">Suggest a font ↗</a></article>
         </div>
       </section>
 
       <section id="library" class="section" aria-labelledby="library-title">
         <div class="section-heading compact">
-          <div><span class="eyebrow">02 · collection</span><h2 id="library-title">Font library</h2></div>
+          <div><span class="eyebrow">03 · collection</span><h2 id="library-title">Find a font</h2></div>
           <div class="library-count" id="library-count"></div>
         </div>
         <div class="library-toolbar">
           <div class="filter-pills" role="tablist" aria-label="Filter fonts">
             <button class="active" type="button" data-filter="all" role="tab" aria-controls="font-grid" aria-selected="true">All</button>
             <button type="button" data-filter="ready" role="tab" aria-controls="font-grid" aria-selected="false">Ready to mix</button>
-            <button type="button" data-filter="reference" role="tab" aria-controls="font-grid" aria-selected="false">Reference</button>
+            <button type="button" data-filter="reference" role="tab" aria-controls="font-grid" aria-selected="false">Creator’s bookmarks</button>
             <button type="button" data-filter="mine" role="tab" aria-controls="font-grid" aria-selected="false">My fonts</button>
           </div>
           <label class="search"><span aria-hidden="true">⌕</span><input id="font-search" type="search" placeholder="Search fonts" aria-label="Search fonts"></label>
@@ -135,16 +146,7 @@
         <div class="font-grid" id="font-grid"></div>
       </section>
 
-      <section id="how-it-works" class="section how-section" aria-labelledby="how-title">
-        <div class="section-heading compact"><div><span class="eyebrow">04 · collect</span><h2 id="how-title">Bring your finds with you.</h2></div></div>
-        <div class="how-grid">
-          <article><span>01</span><h3>Try it now</h3><p>Add a Google Font or a local font file. Your experiments stay in this browser.</p><button class="text-button" type="button" data-open-add data-mode="google">Add a font →</button></article>
-          <article><span>02</span><h3>Find it on a webpage</h3><p>Use the tiny bookmarklet to collect rendered font names and the page they came from.</p><button class="text-button" type="button" data-open-add data-mode="webpage">Get the font finder →</button></article>
-          <article><span>03</span><h3>Suggest it</h3><p>Send a tidy GitHub issue. A font becomes public only after its source and license are checked.</p><button class="text-button" type="button" data-open-add data-mode="webpage">Suggest a font →</button></article>
-        </div>
-      </section>
-
-      <footer class="page-footer"><span>Made for curious type people.</span><span>No account. No backend. No font files uploaded.</span></footer>
+      <footer class="page-footer"><span>Made for us to explore!</span><span>No account or backend needed</span></footer>
     </main>
   </div>
 
@@ -155,7 +157,6 @@
     </div>
     <div class="dialog-tabs" role="tablist" aria-label="Add font method">
       <button class="active" id="add-tab-google" type="button" role="tab" data-mode-tab="google" aria-controls="add-panel-google" aria-selected="true">Web font</button>
-      <button id="add-tab-webpage" type="button" role="tab" data-mode-tab="webpage" aria-controls="add-panel-webpage" aria-selected="false">From a webpage</button>
       <button id="add-tab-local" type="button" role="tab" data-mode-tab="local" aria-controls="add-panel-local" aria-selected="false">Load a local font</button>
     </div>
 
@@ -174,23 +175,6 @@
         </div>
         <button class="button" type="submit">Add to my library</button>
       </form>
-    </section>
-
-    <section class="dialog-panel" id="add-panel-webpage" role="tabpanel" aria-labelledby="add-tab-webpage" data-mode-panel="webpage" hidden>
-      <p class="panel-intro">Drag this button to your bookmarks bar. Click it on any webpage, then paste the result below.</p>
-      <div class="code-block" data-code-block>
-        <div class="code-block-head"><span>font-finder.js</span><button type="button" id="copy-finder-code" aria-label="Copy Font Finder code"><span>Copy</span><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="8" height="8" rx="1.5" stroke="currentColor"/><path d="M3 10.5H2.5A1.5 1.5 0 0 1 1 9V2.5A1.5 1.5 0 0 1 2.5 1H9a1.5 1.5 0 0 1 1.5 1.5V3" stroke="currentColor"/></svg></button></div>
-        <pre><code id="font-finder-code"><span class="code-muted">// run on any webpage</span>
-<span class="code-keyword">const</span> fonts = collectRenderedFonts();
-copy({ sourceUrl: location.href, fonts });</code></pre>
-      </div>
-      <a class="bookmarklet button" id="font-finder" href="#">Drag Font Finder to bookmarks</a>
-      <label class="payload-field"><span>Paste webpage result</span><textarea id="webpage-payload" rows="5" placeholder='{"sourceUrl":"https://example.com","fonts":["Example Sans"]}'></textarea></label>
-      <div class="detected-fonts" id="detected-fonts"></div>
-      <div class="dialog-actions">
-        <button class="button" id="save-detected" type="button">Save selected as references</button>
-        <button class="button quiet" id="suggest-github" type="button">Suggest on GitHub ↗</button>
-      </div>
     </section>
 
     <section class="dialog-panel" id="add-panel-local" role="tabpanel" aria-labelledby="add-tab-local" data-mode-panel="local" hidden>

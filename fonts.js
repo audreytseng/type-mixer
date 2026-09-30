@@ -32,6 +32,16 @@ window.TYPE_MIXER_FONTS = [
     license: "OFL"
   },
   {
+    id: "hedvig-letters-serif",
+    name: "Hedvig Letters Serif",
+    category: "serif",
+    status: "ready",
+    cssFamily: '"Hedvig Letters Serif", Georgia, serif',
+    cssUrl: "https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&display=swap",
+    sourceUrl: "https://fonts.google.com/specimen/Hedvig+Letters+Serif",
+    license: "OFL"
+  },
+  {
     id: "inter",
     name: "Inter",
     category: "sans",
@@ -40,6 +50,45 @@ window.TYPE_MIXER_FONTS = [
     cssUrl: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap",
     sourceUrl: "https://fonts.google.com/specimen/Inter",
     exampleUrl: "https://www.cleonwong.com/",
+    license: "OFL"
+  },
+  {
+    id: "bdo-grotesk",
+    name: "BDO Grotesk",
+    category: "sans",
+    status: "ready",
+    cssFamily: '"BDO Grotesk", system-ui, sans-serif',
+    sourceUrl: "https://github.com/LCTipografi/BDO-Grotesk",
+    license: "OFL"
+  },
+  {
+    id: "manrope",
+    name: "Manrope",
+    category: "sans",
+    status: "ready",
+    cssFamily: 'Manrope, system-ui, sans-serif',
+    cssUrl: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap",
+    sourceUrl: "https://fonts.google.com/specimen/Manrope",
+    license: "OFL"
+  },
+  {
+    id: "onest",
+    name: "Onest",
+    category: "sans",
+    status: "ready",
+    cssFamily: 'Onest, system-ui, sans-serif',
+    cssUrl: "https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&display=swap",
+    sourceUrl: "https://fonts.google.com/specimen/Onest",
+    license: "OFL"
+  },
+  {
+    id: "space-grotesk",
+    name: "Space Grotesk",
+    category: "sans",
+    status: "ready",
+    cssFamily: '"Space Grotesk", system-ui, sans-serif',
+    cssUrl: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap",
+    sourceUrl: "https://fonts.google.com/specimen/Space+Grotesk",
     license: "OFL"
   },
   {
