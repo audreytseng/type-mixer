@@ -310,7 +310,7 @@
       top.innerHTML = `<span>${String(index + 1).padStart(2, "0")} · ${font.category}</span><span class="badge ready">ready</span>`;
       const specimen = document.createElement("p"); specimen.className = "specimen";
       specimen.style.fontFamily = font.cssFamily;
-      specimen.textContent = "Ideas that feel human.";
+      specimen.textContent = "hello! let’s find your type.";
       const foot = document.createElement("div"); foot.className = "font-card-foot";
       const name = document.createElement("strong"); name.textContent = font.name; foot.append(name);
       const links = document.createElement("span"); links.className = "font-card-links";
